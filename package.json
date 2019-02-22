@@ -1,0 +1,15 @@
+{
+  "name": "mari",
+  "version": "1.0.0",
+  "description": "Modular Aplication Reactive Interface",
+  "main": "index.js",
+  "author": "Uriel Curiel <uriel@warptech.mx>",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "tsc": "^1.20150623.0"
+  },
+  "devDependencies": {
+    "@types/node": "^11.9.4"
+  }
+}

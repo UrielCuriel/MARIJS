@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "none",
+    "lib": ["es2018"],
+    "declaration": true,
+    "outDir": "lib",
+    "strict": true,
+    "rootDir": "./mari",
+    "experimentalDecorators": true
+  },
+}
