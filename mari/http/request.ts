@@ -1,5 +1,4 @@
 import { Http2ServerRequest } from "http2";
-
 export class Request {
   private headers: import("http2").IncomingHttpHeaders;
   method: string | undefined;
@@ -12,6 +11,11 @@ export class Request {
     this.method = this.headers[":method"];
     [this.path, this.query] = this.parsePath(this.headers[":path"]);
     this.cookies = this.parseCookes(this.headers["cookie"]);
+    // console.log(this.httpRequest);
+    
+    httpRequest.on('data',(data:Buffer)=>{
+      console.log(data.toString());      
+    });
   }
   /**
    * parse string to cookies object

@@ -10,4 +10,8 @@ const server = http2.createSecureServer({
     allowHTTP1:true,
   },handler.watch);
 
-  server.listen(8443);
+  server.listen(8443,'0.0.0.0',(res:any)=>{
+    console.log(res);
+    console.log(`listen on: https://localhost:8443`);
+    
+  });
