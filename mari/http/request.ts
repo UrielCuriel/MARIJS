@@ -1,21 +1,19 @@
-import { Http2ServerRequest } from "http2";
+import { Http2ServerRequest, IncomingHttpHeaders } from 'http2';
+import * as qs from "querystring";
+import { Form } from "multiparty";
 export class Request {
-  private headers: import("http2").IncomingHttpHeaders;
+  headers: IncomingHttpHeaders;
   method: string | undefined;
   path: string | undefined;
   cookies: {};
   params = {};
   query = {};
-  constructor(private httpRequest: Http2ServerRequest) {
-    this.headers = this.httpRequest.headers;
+  body: any;
+  constructor(public httpRequest?: Http2ServerRequest) {
+    this.headers = this.httpRequest ? this.httpRequest.headers : {};
     this.method = this.headers[":method"];
     [this.path, this.query] = this.parsePath(this.headers[":path"]);
     this.cookies = this.parseCookes(this.headers["cookie"]);
-    // console.log(this.httpRequest);
-    
-    httpRequest.on('data',(data:Buffer)=>{
-      console.log(data.toString());      
-    });
   }
   /**
    * parse string to cookies object
@@ -25,9 +23,9 @@ export class Request {
     const _cookies: any = {};
     cookies
       ? cookies.split(";").forEach(_cookie => {
-          const [name, value] = _cookie.split("=");
-          _cookies[name.trim()] = value;
-        })
+        const [name, value] = _cookie.split("=");
+        _cookies[name.trim()] = value;
+      })
       : null;
     return _cookies;
   }

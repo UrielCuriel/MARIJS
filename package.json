@@ -7,8 +7,13 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "@types/multiparty": "^0.0.32",
     "http-message-parser": "^0.0.34",
-    "tsc": "^1.20150623.0"
+    "install": "^0.12.2",
+    "multiparty": "^4.2.1",
+    "parse-formdata": "^1.0.2",
+    "tsc": "^1.20150623.0",
+    "tslint-config-airbnb": "^5.11.1"
   },
   "devDependencies": {
     "@types/node": "^11.9.4"

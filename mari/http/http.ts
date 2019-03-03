@@ -1,40 +1,73 @@
+import { Http2ServerRequest, Http2ServerResponse } from 'http2';
+import * as http2 from 'http2';
+import * as fs from 'fs';
 import { Request } from './request';
-import { Http2ServerRequest, Http2ServerResponse } from "http2";
 
 
+export namespace Http {
+    export let MIDDLEWARES: any[] = [];
+    export class Application {
+        middleWares: any[] = [];
+        Routes = [];
+        constructor() {
+            this.loadMiddlewares();
+        }
+        loadMiddlewares() {
+            MIDDLEWARES.forEach(_m => {
+                this.middleWares.indexOf(_m) != -1 ? this.middleWares.push(_m) : null;
+            })
+
+        }
 
 
-export class Http {
-    private middleWares = [];
-    private getFuncs = [];
-    private postFunc = [];
+        watch(req: Http2ServerRequest, res: Http2ServerResponse) {
+            let _req = new Request(req);
+            this.middleWares.forEach((_m) => {
+                console.log(_m);
 
-    constructor() {
+                _m(_req, res);
+            });
+        }
 
+        init(serverOptions: serverOptions) {
+            const server = http2.createSecureServer({
+                key: fs.readFileSync('localhost-privkey.pem'),
+                cert: fs.readFileSync('localhost-cert.pem'),
+                allowHTTP1: true,
+            });
+
+            server.on('request', (req, res) => {
+                this.watch(req, res);
+            });
+
+            server.listen(serverOptions.port, serverOptions.host, (res: any) => {
+                console.log(res);
+                console.log(`listen on: https://localhost:8443`);
+
+            });
+        }
+        addMiddleWare(middleWare: any) {
+            console.log(middleWare[0]);
+            this.middleWares.push(middleWare);
+            console.log(this.middleWares);
+        }
     }
-    watch(req: Http2ServerRequest, res: Http2ServerResponse) {
-        const _req = new Request(req);
-        console.log(_req.cookies);
-        console.log(_req.method);
-        console.log(_req.params);
-        console.log(_req.path);
-        const _res = {
-            message: 'hello world',
-            status: true
-        };
-        // Website you wish to allow to connect
-        res.setHeader('Access-Control-Allow-Origin', '*');
 
-        // Request methods you wish to allow
-        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    export function MiddleWare(options?: middleWareOptions) {
+        return function (target: any, key: any, descriptor: any) {
+            options ?
+                options.app ? options.app.addMiddleWare(target[key])
+                    : MIDDLEWARES.push(target[key])
+                : MIDDLEWARES.push(target[key]);
+        }
+    }
 
-        // Request headers you wish to allow
-        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-
-        // Set to true if you need the website to include cookies in the requests sent
-        // to the API (e.g. in case you use sessions)
-        res.setHeader('Access-Control-Allow-Credentials', true);
-        res.setHeader('Content-Type', 'application/json')
-        res.end(JSON.stringify(_res));
+    export interface middleWareOptions {
+        app?: Application
+    }
+    export interface serverOptions {
+        port?: number,
+        host?: string,
     }
 }
+

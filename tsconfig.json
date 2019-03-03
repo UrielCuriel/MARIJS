@@ -1,12 +1,15 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "module": "none",
+    "baseUrl": ".",
+    "paths": { "*": ["types/*"] },
+    "target": "es5",
+    "module": "commonjs",
     "lib": ["es2018"],
     "declaration": true,
     "outDir": "lib",
     "strict": true,
     "rootDir": "./mari",
+    "emitDecoratorMetadata": true,
     "experimentalDecorators": true
   },
 }

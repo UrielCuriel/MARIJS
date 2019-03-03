@@ -1,17 +1,12 @@
-import * as fs  from 'fs';
-import * as http2  from 'http2';
-import { Http } from "./http/http";
+import { MiddleWares } from "./http/middlewares";
+import { API } from "./applications";
 
-const handler =new  Http();
+class Mari {
+    middlewares: MiddleWares;
+    constructor() {
+        this.middlewares = new MiddleWares();
+        API.init({ port: 8443, host: '0.0.0.0' })
+    }
+}
 
-const server = http2.createSecureServer({
-    key: fs.readFileSync('localhost-privkey.pem'),
-    cert: fs.readFileSync('localhost-cert.pem'),
-    allowHTTP1:true,
-  },handler.watch);
-
-  server.listen(8443,'0.0.0.0',(res:any)=>{
-    console.log(res);
-    console.log(`listen on: https://localhost:8443`);
-    
-  });
+let mari = new Mari();
